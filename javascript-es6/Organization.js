@@ -10,12 +10,33 @@ class Organization {
 
     // Hire the given person as an employee in the position that has that title
     // Return the newly filled position or undefined if no position has that title
-    this.hire = (person, title) => {
-      // your code here
+    
+      this.hire = (person, title) => {
+      // Use a recursive function to look for position by title
+      const findPositionByTitle = (position, title) => {
+        if (position.getTitle() === title) {
+          return position;
+        }
+        for (const report of position.getDirectReports()) {
+          const found = findPositionByTitle(report, title);
+          if (found) {
+            return found;
+          }
+        }
+        return null;
+      };
+      
+      const targetPosition = findPositionByTitle(root, title);
+      if (targetPosition && !targetPosition.isFilled()) {
+        targetPosition.setEmployee(person);
+        return targetPosition;
+      }
+      return undefined;
     };
-
+    
     this.toString = () => this.printOrganization(root, '');
-  };
-}
+
+  };   
+};
 
 export default Organization;
